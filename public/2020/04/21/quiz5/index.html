@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Quiz5 &middot; Blog-CU</title>
+
+		
+  		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Blog-CU" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/">
+					<h2 class="nav-title">Blog-CU</h2>
+				</a>
+				<ul>
+    
+    
+        <li>
+            <a href="/about/">
+                
+                <span>About</span>
+                
+            </a>
+        </li>
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Seewoo Li 2014182057 College of Education
+        <br>
+        <span>on&nbsp;</span><time datetime="2020-04-21 22:00:00 &#43;0900 KST">April 21, 2020</time>
+</div>
+		<h1 class="post-title">Quiz5</h1>
+<div class="post-line"></div>
+
+		
+
+		
+
+
+<div id="selecting-model" class="section level1">
+<h1>Selecting Model</h1>
+<div id="making-table" class="section level3">
+<h3>1. Making Table</h3>
+<pre><code>##     freq S E I
+## 1     14 1 1 1
+## 2    483 1 0 1
+## 3    497 0 1 1
+## 4   1008 0 0 1
+## 5   1105 1 1 0
+## 6 411111 1 0 0
+## 7   4624 0 1 0
+## 8 157342 0 0 0</code></pre>
+</div>
+<div id="fitting-all-possible-models" class="section level3">
+<h3>2. Fitting All Possible Models</h3>
+<pre class="r"><code>fit1 &lt;- glm(freq~S*E*I, family=poisson(link=&#39;log&#39;), data=tab)
+fit2 &lt;- glm(freq~S+E+I+S:E+S:I+E:I, family=poisson(link=&#39;log&#39;), data=tab)
+fit3 &lt;- glm(freq~S+E+I+S:E+S:I, family=poisson(link=&#39;log&#39;), data=tab)
+fit4 &lt;- glm(freq~S+E+I+S:E+E:I, family=poisson(link=&#39;log&#39;), data=tab)
+fit5 &lt;- glm(freq~S+E+I+S:I+E:I, family=poisson(link=&#39;log&#39;), data=tab)
+fit6 &lt;- glm(freq~S+E+I+S:E, family=poisson(link=&#39;log&#39;), data=tab)
+fit7 &lt;- glm(freq~S+E+I+S:I, family=poisson(link=&#39;log&#39;), data=tab)
+fit8 &lt;- glm(freq~S+E+I+E:I, family=poisson(link=&#39;log&#39;), data=tab)
+fit9 &lt;- glm(freq~S+E+I, family=poisson(link=&#39;log&#39;), data=tab)</code></pre>
+</div>
+<div id="deviance-and-aic-for-selecting-the-best-model" class="section level3">
+<h3>3. Deviance and AIC for Selecting the Best Model</h3>
+<pre class="r"><code>devi &lt;- c()
+aic &lt;- c()
+for(i in 1:9){
+  devi[i] &lt;- round(eval(parse(text=paste(&#39;fit&#39;,i,&#39;$deviance&#39;, sep=&#39;&#39;))),2)
+  aic[i] &lt;- round(eval(parse(text=paste(&#39;fit&#39;,i,&#39;$aic&#39;, sep=&#39;&#39;))),2)
+}
+model &lt;- c(&#39;saturated&#39;,&#39;homogeneous&#39;, &#39;SE_SI&#39;, &#39;SE_EI&#39;, &#39;SI_EI&#39;, &#39;SE&#39;, &#39;SI&#39;, &#39;EI&#39;,&#39;Mutual indep&#39;)
+model_selec &lt;- cbind(model, devi, aic)
+model_selec</code></pre>
+<pre><code>##       model          devi       aic       
+##  [1,] &quot;saturated&quot;    &quot;0&quot;        &quot;93&quot;      
+##  [2,] &quot;homogeneous&quot;  &quot;2.85&quot;     &quot;93.85&quot;   
+##  [3,] &quot;SE_SI&quot;        &quot;1680.41&quot;  &quot;1769.41&quot; 
+##  [4,] &quot;SE_EI&quot;        &quot;1144.64&quot;  &quot;1233.64&quot; 
+##  [5,] &quot;SI_EI&quot;        &quot;7133.98&quot;  &quot;7222.98&quot; 
+##  [6,] &quot;SE&quot;           &quot;3567.72&quot;  &quot;3654.72&quot; 
+##  [7,] &quot;SI&quot;           &quot;9557.06&quot;  &quot;9644.06&quot; 
+##  [8,] &quot;EI&quot;           &quot;9021.29&quot;  &quot;9108.29&quot; 
+##  [9,] &quot;Mutual indep&quot; &quot;11444.38&quot; &quot;11529.37&quot;</code></pre>
+</div>
+<div id="model-selection" class="section level3">
+<h3>4. Model Selection</h3>
+<ul>
+<li>Although <strong>saturated model</strong> has the least AIC among others, it is possible for the model which has <strong>homogeneous association</strong> being selected for the convenience in interpretation.</li>
+<li>The increment of deviance by 2.85 can be accepted in return for the decrement of degrees of freedom by 1.
+<span class="math display">\[Model : log{\mu_{ijk}}=\lambda+\lambda_i^S+\lambda_j^E+\lambda_k^I+\lambda_{ij}^{SE}+\lambda_{ik}^{SI}+\lambda_{jk}^{EI}\]</span></li>
+</ul>
+</div>
+</div>
+<div id="interpretation" class="section level1">
+<h1>Interpretation</h1>
+<div id="the-model-has-homogeneous-association." class="section level3">
+<h3>The model has <em>homogeneous association</em>.</h3>
+<div id="logoddsratio_seklogfracmu_11kmu_00kmu_10kmu_01klambda_11se-for-all-k01" class="section level4">
+<h4><span class="math inline">\(log{OddsRatio_{SE(k)}}=log{\frac{\mu_{11(k)}\mu_{00(k)}}{\mu_{10(k)}\mu_{01(k)}}}=\lambda_{11}^{SE}\)</span>, for all k=0,1</h4>
+</div>
+<div id="logoddsratio_sijlogfracmu_1j1mu_0j0mu_1j0mu_0j1lambda_11si-for-all-j01" class="section level4">
+<h4><span class="math inline">\(log{OddsRatio_{SI(j)}}=log{\frac{\mu_{1(j)1}\mu_{0(j)0}}{\mu_{1(j)0}\mu_{0(j)1}}}=\lambda_{11}^{SI}\)</span>, for all j=0,1</h4>
+</div>
+<div id="logoddsratio_eiilogfracmu_i11mu_i00mu_i10mu_i01lambda_11ei-for-all-i01" class="section level4">
+<h4><span class="math inline">\(log{OddsRatio_{EI(i)}}=log{\frac{\mu_{(i)11}\mu_{(i)00}}{\mu_{(i)10}\mu_{(i)01}}}=\lambda_{11}^{EI}\)</span>, for all i=0,1</h4>
+</div>
+<div id="each-pair-of-variables-s-e-i-is-not-independent-but-its-relation-is-not-affected-by-the-leftover." class="section level4">
+<h4>Each pair of variables S, E, I is not independent, but its relation is not affected by <em>the</em> leftover.</h4>
+</div>
+</div>
+</div>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/about/" class="left arrow">&#8592;</a>
+		<a href="/2020/05/30/constructing-hospital-score-using-pca/" class="right arrow">&#8594;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2020-06-06 01:47:48.7807396 &#43;0900 KST m=&#43;0.135636601">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
