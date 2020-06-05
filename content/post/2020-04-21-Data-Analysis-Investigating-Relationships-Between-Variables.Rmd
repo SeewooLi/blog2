@@ -1,6 +1,6 @@
 ---
-title: "Quiz5"
-author: "Seewoo Li 2014182057 College of Education"
+title: "-Data-Analysis-Investigating-Relationships-Between-Variables"
+author: "Seewoo Li"
 date: '2020-04-21T22:00:00+09:00'
 output: html_document
 ---

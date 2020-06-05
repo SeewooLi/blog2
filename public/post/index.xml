@@ -17,7 +17,8 @@
       <pubDate>Sat, 06 Jun 2020 01:34:01 +0900</pubDate>
       
       <guid>/2020/06/06/about-happiness-priceless-life/</guid>
-      <description>Priceless LifeIntro약 1년 전, “행복의 과학”이라는 수업을 수강하고 있는 친구로부터 “사람은 행복하기 위해 사는 게 아니고, 살기 위해 행복해지려고 하는 거래!”라는 말을 들었다. 행복이라는 것 이전에 삶(존재)이 있다는 말이다. 처음 그 말을 들었을 때는 일리 있는 말이라고만 생각했다. 그런데 몇 달 전 문득 그 말의 진짜 의미를 깨닫게 됐다.##### Happiness, Analogous to Battery인간은 목적성 없이 태어났다. 부모님은 어떠한 목적을 갖고 나를 낳으셨을 수도 있지만 적어도 나는 무엇인가를 위해 태어나지 않았고 그렇게 할 수도 없다.</description>
+      <description>Priceless LifeIntro약 1년 전, “행복의 과학”이라는 수업을 수강하고 있는 친구로부터 “사람은 행복하기 위해 사는 게 아니고, 살기 위해 행복해지려고 하는 거래!”라는 말을 들었다. 행복이라는 것 이전에 삶(존재)이 있다는 말이다. 처음 그 말을 들었을 때는 일리 있는 말이라고만 생각했다. 그런데 몇 달 전 문득 그 말의 진짜 의미를 깨닫게 됐다.
+Happiness, Analogous to Battery인간은 목적성 없이 태어났다. 부모님은 어떠한 목적을 갖고 나를 낳으셨을 수도 있지만 적어도 나는 무엇인가를 위해 태어나지 않았고 그렇게 할 수도 없다.</description>
     </item>
     
     <item>
@@ -30,11 +31,11 @@
     </item>
     
     <item>
-      <title>Quiz5</title>
-      <link>/2020/04/21/quiz5/</link>
+      <title>-Data-Analysis-Investigating-Relationships-Between-Variables</title>
+      <link>/2020/04/21/data-analysis-investigating-relationships-between-variables/</link>
       <pubDate>Tue, 21 Apr 2020 22:00:00 +0900</pubDate>
       
-      <guid>/2020/04/21/quiz5/</guid>
+      <guid>/2020/04/21/data-analysis-investigating-relationships-between-variables/</guid>
       <description>Selecting Model1. Making Table## freq S E I## 1 14 1 1 1## 2 483 1 0 1## 3 497 0 1 1## 4 1008 0 0 1## 5 1105 1 1 0## 6 411111 1 0 0## 7 4624 0 1 0## 8 157342 0 0 02. Fitting All Possible Modelsfit1 &amp;lt;- glm(freq~S*E*I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit2 &amp;lt;- glm(freq~S+E+I+S:E+S:I+E:I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit3 &amp;lt;- glm(freq~S+E+I+S:E+S:I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit4 &amp;lt;- glm(freq~S+E+I+S:E+E:I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit5 &amp;lt;- glm(freq~S+E+I+S:I+E:I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit6 &amp;lt;- glm(freq~S+E+I+S:E, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit7 &amp;lt;- glm(freq~S+E+I+S:I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit8 &amp;lt;- glm(freq~S+E+I+E:I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)fit9 &amp;lt;- glm(freq~S+E+I, family=poisson(link=&amp;#39;log&amp;#39;), data=tab)3.</description>
     </item>
     
