@@ -1,0 +1,63 @@
+---
+title: "Quiz5"
+author: "Seewoo Li 2014182057 College of Education"
+date: '2020-04-21T22:00:00+09:00'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Selecting Model
+
+### 1. Making Table
+```{r, echo=FALSE}
+freq <- c(14,483,497,1008,1105,411111,4624,157342)
+S <- c(1,1,0,0,1,1,0,0)
+E <- c(1,0,1,0,1,0,1,0)
+I <- c(1,1,1,1,0,0,0,0)
+
+tab <- data.frame(freq, S, E, I)
+tab
+```
+
+### 2. Fitting All Possible Models
+```{r}
+fit1 <- glm(freq~S*E*I, family=poisson(link='log'), data=tab)
+fit2 <- glm(freq~S+E+I+S:E+S:I+E:I, family=poisson(link='log'), data=tab)
+fit3 <- glm(freq~S+E+I+S:E+S:I, family=poisson(link='log'), data=tab)
+fit4 <- glm(freq~S+E+I+S:E+E:I, family=poisson(link='log'), data=tab)
+fit5 <- glm(freq~S+E+I+S:I+E:I, family=poisson(link='log'), data=tab)
+fit6 <- glm(freq~S+E+I+S:E, family=poisson(link='log'), data=tab)
+fit7 <- glm(freq~S+E+I+S:I, family=poisson(link='log'), data=tab)
+fit8 <- glm(freq~S+E+I+E:I, family=poisson(link='log'), data=tab)
+fit9 <- glm(freq~S+E+I, family=poisson(link='log'), data=tab)
+```
+
+### 3. Deviance and AIC for Selecting the Best Model
+```{r, echo=T}
+devi <- c()
+aic <- c()
+for(i in 1:9){
+  devi[i] <- round(eval(parse(text=paste('fit',i,'$deviance', sep=''))),2)
+  aic[i] <- round(eval(parse(text=paste('fit',i,'$aic', sep=''))),2)
+}
+model <- c('saturated','homogeneous', 'SE_SI', 'SE_EI', 'SI_EI', 'SE', 'SI', 'EI','Mutual indep')
+model_selec <- cbind(model, devi, aic)
+model_selec
+```
+
+### 4. Model Selection
+* Although **saturated model** has the least AIC among others, it is possible for the model which has **homogeneous association** being selected for the convenience in interpretation.
+* The increment of deviance by 2.85 can be accepted in return for the decrement of degrees of freedom by 1.
+\[Model : log{\mu_{ijk}}=\lambda+\lambda_i^S+\lambda_j^E+\lambda_k^I+\lambda_{ij}^{SE}+\lambda_{ik}^{SI}+\lambda_{jk}^{EI}\]
+
+
+# Interpretation
+### The model has *homogeneous association*.
+#### \(log{OddsRatio_{SE(k)}}=log{\frac{\mu_{11(k)}\mu_{00(k)}}{\mu_{10(k)}\mu_{01(k)}}}=\lambda_{11}^{SE}\), for all k=0,1
+#### \(log{OddsRatio_{SI(j)}}=log{\frac{\mu_{1(j)1}\mu_{0(j)0}}{\mu_{1(j)0}\mu_{0(j)1}}}=\lambda_{11}^{SI}\), for all j=0,1
+#### \(log{OddsRatio_{EI(i)}}=log{\frac{\mu_{(i)11}\mu_{(i)00}}{\mu_{(i)10}\mu_{(i)01}}}=\lambda_{11}^{EI}\), for all i=0,1
+#### Each pair of variables S, E, I is not independent, but its relation is not affected by *the* leftover.
+
