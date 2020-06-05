@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Constructing Hospital Score Using PCA &middot; A Hugo website</title>
+
+		
+  		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="A Hugo website" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/">
+					<h2 class="nav-title">A Hugo website</h2>
+				</a>
+				<ul>
+    
+    
+        <li>
+            <a href="/about/">
+                
+                <span>About</span>
+                
+            </a>
+        </li>
+    
+        <li>
+            <a href="https://github.com/rstudio/blogdown">
+                
+                <span>GitHub</span>
+                
+            </a>
+        </li>
+    
+        <li>
+            <a href="https://twitter.com/rstudio">
+                
+                <span>Twitter</span>
+                
+            </a>
+        </li>
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Seewoo
+</div>
+		<h1 class="post-title">Constructing Hospital Score Using PCA</h1>
+<div class="post-line"></div>
+
+		
+
+		
+
+
+<div id="eda" class="section level1">
+<h1>1. EDA</h1>
+<div id="reading-csv-file" class="section level3">
+<h3>reading csv file</h3>
+</div>
+<div id="merging-plots" class="section level3">
+<h3>merging plots</h3>
+<pre class="r"><code>hpdata &lt;- inner_join(table_1, table_2, by=&#39;hpid&#39;)</code></pre>
+</div>
+<div id="selecting-variables" class="section level3">
+<h3>selecting variables</h3>
+<pre class="r"><code>hpdata &lt;- hpdata %&gt;%
+  select(dutyName.x, starts_with(&#39;h&#39;), starts_with(&#39;mk&#39;))%&gt;%
+  select(-hv1, -hv12, -hvidate)
+glimpse(hpdata)</code></pre>
+<pre><code>## Rows: 313
+## Columns: 36
+## $ dutyName.x &lt;chr&gt; &quot;의료법인강릉동인병원&quot;, &quot;강릉아산병원&quot;, &quot;강원도삼척의료원&quot;, &quot;강원도속초의료원&quot;, &quot;의료법인보광의...
+## $ hpid       &lt;chr&gt; &quot;A2200005&quot;, &quot;A2200008&quot;, &quot;A2200007&quot;, &quot;A2200012&quot;, &quot;A220004...
+## $ hv10       &lt;chr&gt; &quot;0&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;...
+## $ hv11       &lt;chr&gt; &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;...
+## $ hv2        &lt;dbl&gt; 6, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,...
+## $ hv3        &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 5, 10, 4, 0, 0...
+## $ hv4        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hv5        &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ hv6        &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hv7        &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;...
+## $ hv8        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hv9        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hvamyn     &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ hvangioayn &lt;chr&gt; &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...
+## $ hvcc       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hvccc      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hvctayn    &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ hvec       &lt;dbl&gt; 17, 14, 18, 19, 8, 4, 8, 15, 14, 16, 9, 10, 10, 10, 13, ...
+## $ hvgc       &lt;dbl&gt; 64, 62, 15, 59, 37, 148, 90, 91, 143, 42, 73, 19, 30, 10...
+## $ hvicc      &lt;dbl&gt; 1, 0, 1, 3, 6, 3, 0, 0, 0, 0, 11, 1, 0, 6, 0, 0, 0, 4, 4...
+## $ hvmriayn   &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ hvncc      &lt;dbl&gt; 0, 6, 0, 0, 0, 0, 0, 17, 10, 0, 0, 0, 0, 3, 13, 4, -1, 0...
+## $ hvoc       &lt;dbl&gt; 5, 13, 2, 3, 4, 3, 6, 15, 11, 9, 2, 2, 0, 8, 10, 2, 13, ...
+## $ hvventiayn &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ mkioskty25 &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ mkioskty1  &lt;chr&gt; &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty2  &lt;chr&gt; &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty3  &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty4  &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ mkioskty5  &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty6  &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty7  &lt;chr&gt; &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty8  &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty9  &lt;chr&gt; &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;...
+## $ mkioskty10 &lt;chr&gt; &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...
+## $ mkioskty11 &lt;chr&gt; &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...</code></pre>
+<pre class="r"><code>str(hpdata)</code></pre>
+<pre><code>## tibble [313 x 36] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ dutyName.x: chr [1:313] &quot;의료법인강릉동인병원&quot; &quot;강릉아산병원&quot; &quot;강원도삼척의료원&quot; &quot;강원도속초의료원&quot; ...
+##  $ hpid      : chr [1:313] &quot;A2200005&quot; &quot;A2200008&quot; &quot;A2200007&quot; &quot;A2200012&quot; ...
+##  $ hv10      : chr [1:313] &quot;0&quot; &quot;Y&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ hv11      : chr [1:313] &quot;0&quot; &quot;Y&quot; &quot;Y&quot; &quot;0&quot; ...
+##  $ hv2       : num [1:313] 6 0 0 0 0 0 0 1 0 0 ...
+##  $ hv3       : num [1:313] 0 1 0 0 0 0 0 2 0 0 ...
+##  $ hv4       : num [1:313] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ hv5       : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hv6       : num [1:313] 0 1 0 0 0 0 0 1 1 0 ...
+##  $ hv7       : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ hv8       : num [1:313] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ hv9       : num [1:313] 0 0 0 0 0 0 0 4 0 0 ...
+##  $ hvamyn    : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hvangioayn: chr [1:313] &quot;N&quot; &quot;N&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ hvcc      : num [1:313] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ hvccc     : num [1:313] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ hvctayn   : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hvec      : num [1:313] 17 14 18 19 8 4 8 15 14 16 ...
+##  $ hvgc      : num [1:313] 64 62 15 59 37 148 90 91 143 42 ...
+##  $ hvicc     : num [1:313] 1 0 1 3 6 3 0 0 0 0 ...
+##  $ hvmriayn  : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hvncc     : num [1:313] 0 6 0 0 0 0 0 17 10 0 ...
+##  $ hvoc      : num [1:313] 5 13 2 3 4 3 6 15 11 9 ...
+##  $ hvventiayn: chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ mkioskty25: chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;Y&quot; ...
+##  $ mkioskty1 : chr [1:313] &quot;N&quot; &quot;Y&quot; &quot;Y&quot; &quot;N&quot; ...
+##  $ mkioskty2 : chr [1:313] &quot;N&quot; &quot;N&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty3 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty4 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ mkioskty5 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty6 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;N&quot; ...
+##  $ mkioskty7 : chr [1:313] &quot;N&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty8 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;Y&quot; ...
+##  $ mkioskty9 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;N&quot; ...
+##  $ mkioskty10: chr [1:313] &quot;N&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty11: chr [1:313] &quot;Y&quot; &quot;N&quot; &quot;N&quot; &quot;N&quot; ...</code></pre>
+</div>
+<div id="length-of-unique-values-in-each-variable" class="section level3">
+<h3>length of unique values in each variable</h3>
+<pre class="r"><code>nuniq &lt;- c()
+for(i in 1:length(colnames(hpdata))) {
+  nuniq[i] &lt;- hpdata[,i] %&gt;%
+  n_distinct()
+}
+nuniq</code></pre>
+<pre><code>##  [1] 312 313   3   3  13  12   1   2   9   3   1  10   1   1   5   6   2  35 140
+## [20]  18   3  21  29   2   2   2   2   2   2   2   2   2   2   2   2   2</code></pre>
+</div>
+<div id="remove-columns-with-zero-variance" class="section level3">
+<h3>remove columns with zero variance</h3>
+<pre class="r"><code>hpdata &lt;- hpdata[,nuniq!=1]</code></pre>
+<pre class="r"><code>str(hpdata)</code></pre>
+<pre><code>## tibble [313 x 32] (S3: tbl_df/tbl/data.frame)
+##  $ dutyName.x: chr [1:313] &quot;의료법인강릉동인병원&quot; &quot;강릉아산병원&quot; &quot;강원도삼척의료원&quot; &quot;강원도속초의료원&quot; ...
+##  $ hpid      : chr [1:313] &quot;A2200005&quot; &quot;A2200008&quot; &quot;A2200007&quot; &quot;A2200012&quot; ...
+##  $ hv10      : chr [1:313] &quot;0&quot; &quot;Y&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ hv11      : chr [1:313] &quot;0&quot; &quot;Y&quot; &quot;Y&quot; &quot;0&quot; ...
+##  $ hv2       : num [1:313] 6 0 0 0 0 0 0 1 0 0 ...
+##  $ hv3       : num [1:313] 0 1 0 0 0 0 0 2 0 0 ...
+##  $ hv5       : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hv6       : num [1:313] 0 1 0 0 0 0 0 1 1 0 ...
+##  $ hv7       : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ hv9       : num [1:313] 0 0 0 0 0 0 0 4 0 0 ...
+##  $ hvcc      : num [1:313] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ hvccc     : num [1:313] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ hvctayn   : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hvec      : num [1:313] 17 14 18 19 8 4 8 15 14 16 ...
+##  $ hvgc      : num [1:313] 64 62 15 59 37 148 90 91 143 42 ...
+##  $ hvicc     : num [1:313] 1 0 1 3 6 3 0 0 0 0 ...
+##  $ hvmriayn  : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ hvncc     : num [1:313] 0 6 0 0 0 0 0 17 10 0 ...
+##  $ hvoc      : num [1:313] 5 13 2 3 4 3 6 15 11 9 ...
+##  $ hvventiayn: chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ mkioskty25: chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;Y&quot; ...
+##  $ mkioskty1 : chr [1:313] &quot;N&quot; &quot;Y&quot; &quot;Y&quot; &quot;N&quot; ...
+##  $ mkioskty2 : chr [1:313] &quot;N&quot; &quot;N&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty3 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty4 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; ...
+##  $ mkioskty5 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty6 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;N&quot; ...
+##  $ mkioskty7 : chr [1:313] &quot;N&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty8 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;N&quot; &quot;Y&quot; ...
+##  $ mkioskty9 : chr [1:313] &quot;Y&quot; &quot;Y&quot; &quot;Y&quot; &quot;N&quot; ...
+##  $ mkioskty10: chr [1:313] &quot;N&quot; &quot;Y&quot; &quot;N&quot; &quot;N&quot; ...
+##  $ mkioskty11: chr [1:313] &quot;Y&quot; &quot;N&quot; &quot;N&quot; &quot;N&quot; ...</code></pre>
+<pre class="r"><code>nuniq &lt;- c()
+for(i in 1:length(colnames(hpdata))) {
+  nuniq[i] &lt;- hpdata[,i] %&gt;%
+  n_distinct()
+}
+nuniq</code></pre>
+<pre><code>##  [1] 312 313   3   3  13  12   2   9   3  10   5   6   2  35 140  18   3  21  29
+## [20]   2   2   2   2   2   2   2   2   2   2   2   2   2</code></pre>
+</div>
+<div id="devide-table" class="section level3">
+<h3>devide table</h3>
+<pre class="r"><code>hpdata_f &lt;- hpdata[,nuniq&lt;=3]
+hpdata_n &lt;- hpdata[,nuniq&gt;3]</code></pre>
+</div>
+<div id="recoding" class="section level3">
+<h3>recoding</h3>
+<pre class="r"><code>hpdata_f &lt;- hpdata_f %&gt;%
+  mutate_all(funs(recode(., &#39;N1&#39;=0L, &#39;0&#39;=0L, &#39;N&#39;=0L, &#39;1&#39;=1L, &#39;Y&#39;=1L, .default=1L)))</code></pre>
+<pre><code>## Warning: funs() is soft deprecated as of dplyr 0.8.0
+## Please use a list of either functions or lambdas: 
+## 
+##   # Simple named list: 
+##   list(mean = mean, median = median)
+## 
+##   # Auto named with `tibble::lst()`: 
+##   tibble::lst(mean, median)
+## 
+##   # Using lambdas
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code>str(hpdata_f)</code></pre>
+<pre><code>## tibble [313 x 19] (S3: tbl_df/tbl/data.frame)
+##  $ hv10      : int [1:313] 0 1 0 0 0 0 0 1 1 1 ...
+##  $ hv11      : int [1:313] 0 1 1 0 0 0 0 1 1 1 ...
+##  $ hv5       : int [1:313] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ hv7       : int [1:313] 1 1 0 0 0 0 0 1 1 1 ...
+##  $ hvctayn   : int [1:313] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ hvmriayn  : int [1:313] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ hvventiayn: int [1:313] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ mkioskty25: int [1:313] 1 1 0 1 1 0 1 1 1 1 ...
+##  $ mkioskty1 : int [1:313] 0 1 1 0 0 0 0 1 1 0 ...
+##  $ mkioskty2 : int [1:313] 0 0 0 0 0 0 1 0 0 0 ...
+##  $ mkioskty3 : int [1:313] 1 1 0 0 0 0 0 1 1 1 ...
+##  $ mkioskty4 : int [1:313] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ mkioskty5 : int [1:313] 1 1 0 0 0 0 0 1 1 1 ...
+##  $ mkioskty6 : int [1:313] 1 1 1 0 0 1 1 1 1 1 ...
+##  $ mkioskty7 : int [1:313] 0 1 0 0 0 1 0 1 0 0 ...
+##  $ mkioskty8 : int [1:313] 1 1 0 1 0 1 0 1 1 1 ...
+##  $ mkioskty9 : int [1:313] 1 1 1 0 0 0 0 1 1 1 ...
+##  $ mkioskty10: int [1:313] 0 1 0 0 0 0 0 1 1 0 ...
+##  $ mkioskty11: int [1:313] 1 0 0 0 1 0 0 1 1 0 ...</code></pre>
+</div>
+<div id="merge-again" class="section level3">
+<h3>merge again</h3>
+<pre class="r"><code>hpdata &lt;- bind_cols(hpdata_n, hpdata_f)
+glimpse(hpdata)</code></pre>
+<pre><code>## Rows: 313
+## Columns: 32
+## $ dutyName.x &lt;chr&gt; &quot;의료법인강릉동인병원&quot;, &quot;강릉아산병원&quot;, &quot;강원도삼척의료원&quot;, &quot;강원도속초의료원&quot;, &quot;의료법인보광의...
+## $ hpid       &lt;chr&gt; &quot;A2200005&quot;, &quot;A2200008&quot;, &quot;A2200007&quot;, &quot;A2200012&quot;, &quot;A220004...
+## $ hv2        &lt;dbl&gt; 6, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0,...
+## $ hv3        &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 5, 10, 4, 0, 0...
+## $ hv6        &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hv9        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hvcc       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hvccc      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+## $ hvec       &lt;dbl&gt; 17, 14, 18, 19, 8, 4, 8, 15, 14, 16, 9, 10, 10, 10, 13, ...
+## $ hvgc       &lt;dbl&gt; 64, 62, 15, 59, 37, 148, 90, 91, 143, 42, 73, 19, 30, 10...
+## $ hvicc      &lt;dbl&gt; 1, 0, 1, 3, 6, 3, 0, 0, 0, 0, 11, 1, 0, 6, 0, 0, 0, 4, 4...
+## $ hvncc      &lt;dbl&gt; 0, 6, 0, 0, 0, 0, 0, 17, 10, 0, 0, 0, 0, 3, 13, 4, -1, 0...
+## $ hvoc       &lt;dbl&gt; 5, 13, 2, 3, 4, 3, 6, 15, 11, 9, 2, 2, 0, 8, 10, 2, 13, ...
+## $ hv10       &lt;int&gt; 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0,...
+## $ hv11       &lt;int&gt; 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0,...
+## $ hv5        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ hv7        &lt;int&gt; 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1,...
+## $ hvctayn    &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ hvmriayn   &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ hvventiayn &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ mkioskty25 &lt;int&gt; 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0,...
+## $ mkioskty1  &lt;int&gt; 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0,...
+## $ mkioskty2  &lt;int&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,...
+## $ mkioskty3  &lt;int&gt; 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,...
+## $ mkioskty4  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,...
+## $ mkioskty5  &lt;int&gt; 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0,...
+## $ mkioskty6  &lt;int&gt; 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0,...
+## $ mkioskty7  &lt;int&gt; 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0,...
+## $ mkioskty8  &lt;int&gt; 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0,...
+## $ mkioskty9  &lt;int&gt; 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0,...
+## $ mkioskty10 &lt;int&gt; 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0,...
+## $ mkioskty11 &lt;int&gt; 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0,...</code></pre>
+</div>
+<div id="centering-and-scaling" class="section level3">
+<h3>centering and scaling</h3>
+<pre class="r"><code>hpdata_z &lt;- hpdata %&gt;%
+  mutate_each_(funs(scale), vars=colnames(hpdata)[3:32])</code></pre>
+<pre><code>## Warning: mutate_each() is deprecated
+## Please use mutate_if(), mutate_at(), or mutate_all() instead: 
+## 
+##   - To map `funs` over all variables, use mutate_all()
+##   - To map `funs` over a selection of variables, use mutate_at()
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code>head(hpdata_z[,3:32])</code></pre>
+<pre><code>## # A tibble: 6 x 30
+##   hv2[,1] hv3[,1] hv6[,1] hv9[,1] hvcc[,1] hvccc[,1] hvec[,1] hvgc[,1] hvicc[,1]
+##     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1   3.12   -0.356  -0.235  -0.171   -0.149    -0.124    1.14    -0.364   -0.490 
+## 2  -0.359   0.120   0.642  -0.171   -0.149    -0.124    0.654   -0.397   -0.762 
+## 3  -0.359  -0.356  -0.235  -0.171   -0.149    -0.124    1.30    -1.19    -0.490 
+## 4  -0.359  -0.356  -0.235  -0.171   -0.149    -0.124    1.46    -0.448    0.0548
+## 5  -0.359  -0.356  -0.235  -0.171   -0.149    -0.124   -0.318   -0.819    0.871 
+## 6  -0.359  -0.356  -0.235  -0.171   -0.149    -0.124   -0.967    1.05     0.0548
+## # ... with 21 more variables: hvncc[,1] &lt;dbl&gt;, hvoc[,1] &lt;dbl&gt;, hv10[,1] &lt;dbl&gt;,
+## #   hv11[,1] &lt;dbl&gt;, hv5[,1] &lt;dbl&gt;, hv7[,1] &lt;dbl&gt;, hvctayn[,1] &lt;dbl&gt;,
+## #   hvmriayn[,1] &lt;dbl&gt;, hvventiayn[,1] &lt;dbl&gt;, mkioskty25[,1] &lt;dbl&gt;,
+## #   mkioskty1[,1] &lt;dbl&gt;, mkioskty2[,1] &lt;dbl&gt;, mkioskty3[,1] &lt;dbl&gt;,
+## #   mkioskty4[,1] &lt;dbl&gt;, mkioskty5[,1] &lt;dbl&gt;, mkioskty6[,1] &lt;dbl&gt;,
+## #   mkioskty7[,1] &lt;dbl&gt;, mkioskty8[,1] &lt;dbl&gt;, mkioskty9[,1] &lt;dbl&gt;,
+## #   mkioskty10[,1] &lt;dbl&gt;, mkioskty11[,1] &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div id="pca" class="section level1">
+<h1>2. PCA</h1>
+<div id="principal-component-analysis" class="section level3">
+<h3>Principal Component Analysis</h3>
+<pre class="r"><code>hp_without_id &lt;- hpdata_z[,3:32] %&gt;%
+    as.matrix()
+hp_pca &lt;- prcomp(hp_without_id)
+hp_pca[[1]]</code></pre>
+<pre><code>##  [1] 2.754002e+00 1.720755e+00 1.411599e+00 1.242049e+00 1.144886e+00
+##  [6] 1.128249e+00 1.069838e+00 1.037569e+00 1.009868e+00 9.689509e-01
+## [11] 9.242822e-01 9.118337e-01 8.872557e-01 8.452841e-01 8.235437e-01
+## [16] 8.171788e-01 7.921716e-01 7.759205e-01 6.981109e-01 6.681701e-01
+## [21] 6.511012e-01 6.362573e-01 5.868942e-01 5.730135e-01 5.228457e-01
+## [26] 5.158809e-01 3.967430e-01 3.825128e-01 3.376772e-01 1.223023e-15</code></pre>
+<pre class="r"><code>hp_pca[[2]][,1:3]</code></pre>
+<pre><code>##                    PC1         PC2          PC3
+## hv2        -0.18428779  0.13822699 -0.060154202
+## hv3        -0.20384875  0.19991856 -0.086350699
+## hv6        -0.17148933  0.14451215 -0.039068239
+## hv9        -0.09808548  0.01830479  0.010927088
+## hvcc       -0.09101464  0.14558902 -0.062165691
+## hvccc      -0.12159677  0.10212124 -0.068971427
+## hvec       -0.01194454 -0.23947804  0.036179058
+## hvgc       -0.17597517  0.09361233 -0.139507068
+## hvicc       0.04669590 -0.24742423  0.006235784
+## hvncc      -0.26006542  0.15943534 -0.022511889
+## hvoc       -0.27206005  0.10386183 -0.027060730
+## hv10       -0.30026561  0.14313398 -0.006508880
+## hv11       -0.28773147  0.13032689 -0.013353870
+## hv5        -0.03921070 -0.18245036 -0.649749438
+## hv7        -0.24181735 -0.12239585  0.050785418
+## hvctayn    -0.03921070 -0.18245036 -0.649749438
+## hvmriayn   -0.10320804 -0.20778141 -0.171891569
+## hvventiayn -0.01475009  0.01723712  0.012073206
+## mkioskty25 -0.14504399 -0.32545834  0.093917439
+## mkioskty1  -0.30002855  0.09324527  0.035885149
+## mkioskty2  -0.01240845 -0.17689169  0.072179790
+## mkioskty3  -0.20985983 -0.27106174  0.126248272
+## mkioskty4  -0.03275784 -0.08519503  0.009874346
+## mkioskty5  -0.23969715 -0.20245868  0.115246037
+## mkioskty6  -0.11951641 -0.33596619  0.099173657
+## mkioskty7  -0.12034658 -0.09620336  0.051132989
+## mkioskty8  -0.14749307 -0.29630323  0.082464088
+## mkioskty9  -0.17809874 -0.26653048  0.117523007
+## mkioskty10 -0.29958953  0.10095414  0.031058263
+## mkioskty11 -0.23728115  0.05708709  0.033242411</code></pre>
+</div>
+<div id="variance-explained-r2" class="section level3">
+<h3>variance explained: <span class="math inline">\(R^2\)</span></h3>
+<p>First conponent explains 25% of the total variance.</p>
+<pre class="r"><code>summary(hp_pca)</code></pre>
+<pre><code>## Importance of components:
+##                           PC1    PC2     PC3     PC4     PC5     PC6     PC7
+## Standard deviation     2.7540 1.7208 1.41160 1.24205 1.14489 1.12825 1.06984
+## Proportion of Variance 0.2528 0.0987 0.06642 0.05142 0.04369 0.04243 0.03815
+## Cumulative Proportion  0.2528 0.3515 0.41794 0.46936 0.51305 0.55548 0.59364
+##                            PC8     PC9   PC10    PC11    PC12    PC13    PC14
+## Standard deviation     1.03757 1.00987 0.9690 0.92428 0.91183 0.88726 0.84528
+## Proportion of Variance 0.03588 0.03399 0.0313 0.02848 0.02771 0.02624 0.02382
+## Cumulative Proportion  0.62952 0.66352 0.6948 0.72329 0.75100 0.77724 0.80106
+##                           PC15    PC16    PC17    PC18    PC19    PC20    PC21
+## Standard deviation     0.82354 0.81718 0.79217 0.77592 0.69811 0.66817 0.65110
+## Proportion of Variance 0.02261 0.02226 0.02092 0.02007 0.01625 0.01488 0.01413
+## Cumulative Proportion  0.82367 0.84593 0.86684 0.88691 0.90316 0.91804 0.93217
+##                           PC22    PC23    PC24    PC25    PC26    PC27    PC28
+## Standard deviation     0.63626 0.58689 0.57301 0.52285 0.51588 0.39674 0.38251
+## Proportion of Variance 0.01349 0.01148 0.01094 0.00911 0.00887 0.00525 0.00488
+## Cumulative Proportion  0.94567 0.95715 0.96809 0.97720 0.98608 0.99132 0.99620
+##                          PC29      PC30
+## Standard deviation     0.3377 1.223e-15
+## Proportion of Variance 0.0038 0.000e+00
+## Cumulative Proportion  1.0000 1.000e+00</code></pre>
+</div>
+<div id="scree-plot" class="section level3">
+<h3>scree plot</h3>
+<pre class="r"><code>screeplot(hp_pca, main = &quot;&quot;, col = &quot;blue&quot;, type = &quot;lines&quot;, pch = 21)</code></pre>
+<p><img src="/post/2020-06-05-Principal-Component-Analysis-for-Emergency-Hopital-Data_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="hospital-score" class="section level3">
+<h3>hospital score</h3>
+<pre class="r"><code>hp_pc1 &lt;- predict(hp_pca)[,1]
+hp_score &lt;- (100-20*hp_pc1)
+hospital_score &lt;- hpdata %&gt;%
+  select(dutyName.x,hpid)%&gt;%
+  mutate(score=hp_score)
+skim(hospital_score)</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-13">Table 1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">hospital_score</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">313</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">dutyName.x</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">23</td>
+<td align="right">0</td>
+<td align="right">312</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">hpid</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">313</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">score</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">100</td>
+<td align="right">55.08</td>
+<td align="right">-4.89</td>
+<td align="right">56.88</td>
+<td align="right">82.43</td>
+<td align="right">127.78</td>
+<td align="right">301.22</td>
+<td align="left">▅▇▂▂▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plotting-hospital-scores" class="section level3">
+<h3>plotting hospital scores</h3>
+<pre class="r"><code>library(ggplot2)
+plot_score &lt;- ggplot(hospital_score, aes(x=score))+
+  geom_histogram(fill=&#39;sky blue&#39;, binwidth = 10)
+plot_score</code></pre>
+<p><img src="/post/2020-06-05-Principal-Component-Analysis-for-Emergency-Hopital-Data_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="exporting-dataset" class="section level3">
+<h3>exporting dataset</h3>
+<pre class="r"><code>write.csv(hospital_score, file = &#39;hospital_score&#39;)</code></pre>
+</div>
+</div>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/2015/01/01/lorem-ipsum/" class="right arrow">&#8594;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2020-06-05 17:09:20.4563627 &#43;0900 KST m=&#43;0.222454601">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
