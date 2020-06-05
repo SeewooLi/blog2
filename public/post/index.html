@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<title>Posts &middot; A Hugo website</title>
+		<title>Posts &middot; Blog-CU</title>
 
 		
   		<link rel="stylesheet" href="/css/style.css">
@@ -15,14 +15,14 @@
 		<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
 		
-		<link href="/post/index.xml" rel="alternate" type="application/rss+xml" title="A Hugo website" />
+		<link href="/post/index.xml" rel="alternate" type="application/rss+xml" title="Blog-CU" />
 	</head>
 
     <body>
         		<nav class="nav">
 			<div class="nav-container">
 				<a href="/">
-					<h2 class="nav-title">A Hugo website</h2>
+					<h2 class="nav-title">Blog-CU</h2>
 				</a>
 				<ul>
     
@@ -35,22 +35,6 @@
             </a>
         </li>
     
-        <li>
-            <a href="https://github.com/rstudio/blogdown">
-                
-                <span>GitHub</span>
-                
-            </a>
-        </li>
-    
-        <li>
-            <a href="https://twitter.com/rstudio">
-                
-                <span>Twitter</span>
-                
-            </a>
-        </li>
-    
 </ul>
 			</div>
 		</nav>
@@ -59,6 +43,19 @@
 
 <main>
 	<div class="catalogue">
+		
+			<a href="/2020/05/30/constructing-hospital-score-using-pca/" class="catalogue-item">
+    <div>
+        <time datetime="2020-05-30 02:00:00 &#43;0900 KST" class="catalogue-time">May 30, 2020</time>
+        <h1 class="catalogue-title">Constructing Hospital Score Using PCA</h1>
+        <div class="catalogue-line"></div>
+
+        <p>
+            1. EDAreading csv filemerging plotshpdata &lt;- inner_join(table_1, table_2, by=&#39;hpid&#39;)selecting variableshpdata &lt;- hpdata %&gt;%select(dutyName.x, starts_with(&#39;h&#39;), starts_with(&#39;mk&#39;))%&gt;%select(-hv1, -hv12, -hvidate)glimpse(hpdata)## Rows: 313## Columns: 36## $ dutyName.x &lt;chr&gt; &quot;의료법인강릉동인병원&quot;, &quot;강릉아산병원&quot;, &quot;강원도삼척의료원&quot;, &quot;강원도속초의료원&quot;, &quot;의료법인보광의...## $ hpid &lt;chr&gt; &quot;A2200005&quot;, &quot;A2200008&quot;, &quot;A2200007&quot;, &quot;A2200012&quot;, &quot;A220004...## $ hv10 &lt;chr&gt; &quot;0&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;...## $ hv11 &lt;chr&gt; &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;.
+        </p>
+    </div>
+</a>
+
 		
 			<a href="/2016/12/30/a-plain-markdown-post/" class="catalogue-item">
     <div>
@@ -102,19 +99,6 @@ summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 2
 </a>
 
 		
-			<a href="/1/01/01/constructing-hospital-score-using-pca/" class="catalogue-item">
-    <div>
-        <time datetime="0001-01-01 00:00:00 &#43;0000 UTC" class="catalogue-time">January 1, 0001</time>
-        <h1 class="catalogue-title">Constructing Hospital Score Using PCA</h1>
-        <div class="catalogue-line"></div>
-
-        <p>
-            1. EDAreading csv filemerging plotshpdata &lt;- inner_join(table_1, table_2, by=&#39;hpid&#39;)selecting variableshpdata &lt;- hpdata %&gt;%select(dutyName.x, starts_with(&#39;h&#39;), starts_with(&#39;mk&#39;))%&gt;%select(-hv1, -hv12, -hvidate)glimpse(hpdata)## Rows: 313## Columns: 36## $ dutyName.x &lt;chr&gt; &quot;의료법인강릉동인병원&quot;, &quot;강릉아산병원&quot;, &quot;강원도삼척의료원&quot;, &quot;강원도속초의료원&quot;, &quot;의료법인보광의...## $ hpid &lt;chr&gt; &quot;A2200005&quot;, &quot;A2200008&quot;, &quot;A2200007&quot;, &quot;A2200012&quot;, &quot;A220004...## $ hv10 &lt;chr&gt; &quot;0&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;...## $ hv11 &lt;chr&gt; &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;0&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;0&quot;, &quot;.
-        </p>
-    </div>
-</a>
-
-		
 	</div>
 	
 	<div class="pagination">
@@ -128,7 +112,7 @@ summary(cars)## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 2
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-05 17:09:20.4613483 &#43;0900 KST m=&#43;0.227440201">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-06-05 17:15:28.3073469 &#43;0900 KST m=&#43;0.208438501">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
 
