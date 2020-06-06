@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Blog-CU</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 06 Jun 2020 01:34:01 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jun 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Untitled</title>
+      <link>/2020/06/06/untitled/</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/06/06/untitled/</guid>
+      <description>R Markdown</description>
+    </item>
     
     <item>
       <title>About Happiness-Priceless life</title>
