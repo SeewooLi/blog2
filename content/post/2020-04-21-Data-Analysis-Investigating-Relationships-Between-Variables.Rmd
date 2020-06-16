@@ -48,6 +48,7 @@ model_selec <- cbind(model, devi, aic)
 model_selec
 ```
 
+
 ### 4. Model Selection
 * Although **saturated model** has the least AIC among others, it is possible for the model which has **homogeneous association** being selected for the convenience in interpretation.
 * The increment of deviance by 2.85 can be accepted in return for the decrement of degrees of freedom by 1.
@@ -55,9 +56,10 @@ model_selec
 
 
 # Interpretation
-### The model has *homogeneous association*.
-#### \(log{OddsRatio_{SE(k)}}=log{\frac{\mu_{11(k)}\mu_{00(k)}}{\mu_{10(k)}\mu_{01(k)}}}=\lambda_{11}^{SE}\), for all k=0,1
-#### \(log{OddsRatio_{SI(j)}}=log{\frac{\mu_{1(j)1}\mu_{0(j)0}}{\mu_{1(j)0}\mu_{0(j)1}}}=\lambda_{11}^{SI}\), for all j=0,1
-#### \(log{OddsRatio_{EI(i)}}=log{\frac{\mu_{(i)11}\mu_{(i)00}}{\mu_{(i)10}\mu_{(i)01}}}=\lambda_{11}^{EI}\), for all i=0,1
-#### Each pair of variables S, E, I is not independent, but its relation is not affected by *the* leftover.
+
+* The model has *homogeneous association*.$
+* $log{OddsRatio_{SE(k)}}=log{\frac{\mu_{11(k)}\mu_{00(k)}}{\mu_{10(k)}\mu_{01(k)}}}=\lambda_{11}^{SE}$, for all k=0,1
+* $log{OddsRatio_{SI(j)}}=log{\frac{\mu_{1(j)1}\mu_{0(j)0}}{\mu_{1(j)0}\mu_{0(j)1}}}=\lambda_{11}^{SI}$, for all j=0,1
+* $log{OddsRatio_{EI(i)}}=log{\frac{\mu_{(i)11}\mu_{(i)00}}{\mu_{(i)10}\mu_{(i)01}}}=\lambda_{11}^{EI}$, for all i=0,1
+* Each pair of variables S, E, I is not independent, but its relation is not affected by *the* leftover.
 
