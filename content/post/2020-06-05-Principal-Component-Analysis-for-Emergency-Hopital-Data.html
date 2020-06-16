@@ -61,7 +61,7 @@ glimpse(hpdata)</code></pre>
 ## $ mkioskty10 &lt;chr&gt; &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...
 ## $ mkioskty11 &lt;chr&gt; &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;Y&quot;, &quot;Y&quot;, &quot;N&quot;, &quot;N&quot;, &quot;...</code></pre>
 <pre class="r"><code>str(hpdata)</code></pre>
-<pre><code>## tibble [313 x 36] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+<pre><code>## tibble [313 x 36] (S3: tbl_df/tbl/data.frame)
 ##  $ dutyName.x: chr [1:313] &quot;의료법인강릉동인병원&quot; &quot;강릉아산병원&quot; &quot;강원도삼척의료원&quot; &quot;강원도속초의료원&quot; ...
 ##  $ hpid      : chr [1:313] &quot;A2200005&quot; &quot;A2200008&quot; &quot;A2200007&quot; &quot;A2200012&quot; ...
 ##  $ hv10      : chr [1:313] &quot;0&quot; &quot;Y&quot; &quot;0&quot; &quot;0&quot; ...
@@ -165,7 +165,7 @@ hpdata_n &lt;- hpdata[,nuniq&gt;3]</code></pre>
 <h3>recoding</h3>
 <pre class="r"><code>hpdata_f &lt;- hpdata_f %&gt;%
   mutate_all(funs(recode(., &#39;N1&#39;=0L, &#39;0&#39;=0L, &#39;N&#39;=0L, &#39;1&#39;=1L, &#39;Y&#39;=1L, .default=1L)))</code></pre>
-<pre><code>## Warning: funs() is soft deprecated as of dplyr 0.8.0
+<pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
 ## Please use a list of either functions or lambdas: 
 ## 
 ##   # Simple named list: 
@@ -176,7 +176,8 @@ hpdata_n &lt;- hpdata[,nuniq&gt;3]</code></pre>
 ## 
 ##   # Using lambdas
 ##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-## This warning is displayed once per session.</code></pre>
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre class="r"><code>str(hpdata_f)</code></pre>
 <pre><code>## tibble [313 x 19] (S3: tbl_df/tbl/data.frame)
 ##  $ hv10      : int [1:313] 0 1 0 0 0 0 0 1 1 1 ...
@@ -242,12 +243,10 @@ glimpse(hpdata)</code></pre>
 <h3>centering and scaling</h3>
 <pre class="r"><code>hpdata_z &lt;- hpdata %&gt;%
   mutate_each_(funs(scale), vars=colnames(hpdata)[3:32])</code></pre>
-<pre><code>## Warning: mutate_each() is deprecated
-## Please use mutate_if(), mutate_at(), or mutate_all() instead: 
-## 
-##   - To map `funs` over all variables, use mutate_all()
-##   - To map `funs` over a selection of variables, use mutate_at()
-## This warning is displayed once per session.</code></pre>
+<pre><code>## Warning: `mutate_each_()` is deprecated as of dplyr 0.7.0.
+## Please use `across()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <pre class="r"><code>head(hpdata_z[,3:32])</code></pre>
 <pre><code>## # A tibble: 6 x 30
 ##   hv2[,1] hv3[,1] hv6[,1] hv9[,1] hvcc[,1] hvccc[,1] hvec[,1] hvgc[,1] hvicc[,1]
