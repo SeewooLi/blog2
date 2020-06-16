@@ -98,7 +98,9 @@ summary(fit1)
 summary(fit2)
 ```
  \(\Delta\chi^2=Deviance_{proportional}-Deviance_{unproportional}\) = 11061.27-11051.1=`r 11061.27-11051.1`
+ 
  \(df=df_{proportional}-df_{unproportional}\) = 21565-21556=`r 21565-21556`
+ 
  \(\chi^2_{.05}(9)\) = `r qchisq(.95, 9)`
  Since `r qchisq(.95, 9)` > `r 11061.27-11051.1`, choose proportional model.
 
@@ -110,8 +112,10 @@ fit_without_Early <- vglm(cbind(Never, Year, Month, Week, Day)~ Care + Parent,
 ```{r, include=FALSE}
 summary(fit_without_Early)
 ```
- \(\Delta\chi^2=Deviance_{without Early}-Deviance_{proportional}\) = 11061.35-11061.27=`r 11061.35-11061.27`
+ \(\Delta\chi^2=Deviance_{without Early}-Deviance_{proportional}\) = 11061.35-11061.27=`r 11061.35-11061.27` 
+ 
  \(df=df_{without Early}-df_{proportional}\) = 21566-21565=`r 21566-21565`
+ 
  \(\chi^2_{.05}(1)\) = `r qchisq(.95, 1)`
  Since `r qchisq(.95, 1)` > `r 11061.35-11061.27`, choose model without 'Early'.
 ```{r, include=F}
@@ -124,11 +128,11 @@ summary(fit_without_Early)
 # 4. Model
 * Model : 
 
-\[logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\]
+\[logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\] 
  
 That is,
- $logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},$
- $where  \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .$
+ $logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},$ 
+ $where  \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .$ 
 
 Since $\beta_1<0$, when there is someone to take care of the child(i.e., $X_{Care}=1$), 
 $p(having more time to talk)$ increases.
