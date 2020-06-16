@@ -1,0 +1,146 @@
+---
+title: "Child Parent interaction in Korea"
+author : "Seewoo Li"
+date : "2020-06-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prep, include=FALSE}
+library(readr)
+library(tidyverse)
+library(skimr)
+library(stringr)
+library(recipes)
+library(tidymodels)
+library(VGAM)
+setwd("C:/Users/CU/Desktop/blogdown/blog2/content/post")
+KoreaData <- read_csv('KoreaData.csv')
+```
+# 1. Introduction
+* The data is collected from [PISA(Programme for International Student Assessment)](https://www.oecd.org/pisa/data/2018database/).
+* Country: Korea 
+* Students' age: HighSchool 1^st^Grade
+* A fosterer has responded to several questionnaire. And this report analyzes data obtained from those questionnaire.
+* Explanation of variables
+  + Early : Child regularly attended prior to <grade 1 in ISCED 1>: Early childhood educational development [...]
+  0: No, 1: Yes
+  + Care : <the last academic year>, participation hindered: I had no one to take care of my child/ children.
+  0: There was no one, 1: There was someone
+  + Parent : Who will complete this questionnaire?
+  0: Father, 1: Mother
+  + Talk : Activities with your child, how often: Spend time just talking to my child
+  1: Never or hardly ever
+  2: Once or twice a year
+  3: Once or twice a month
+  4: Once or twice a week
+  5: Every day or almost every day
+  + Lastly, this report is to analyze the relationship among _'Talk'_, _'Early'_, _'Care'_, _'Parent'_.
+
+# 2. Eploratory Data Analysis
+```{r, include=FALSE}
+rdata <- KoreaData %>%
+  select(CNTSTUID,
+         PA018Q02NA,
+         PA009Q03NA,
+         PA001Q01TA,
+         PA001Q02TA,
+         PA001Q03TA,
+         PA003Q03TA) %>%
+  filter(PA018Q02NA != 'NA' &
+         PA009Q03NA != 'NA' &
+         PA001Q01TA != 'NA' &
+         PA001Q02TA != 'NA' &
+         PA001Q03TA != 'NA' &
+         PA003Q03TA != 'NA' )
+#skim(rdata)
+colnames(rdata) <- c('ID', 'Early', 'Care', 'Mother', 'Father', 'Other', 'Talk')
+rdata <- rdata %>% 
+  mutate(Early = recode(Early, '1'=1L, '2'=0L),
+         Care = Care-1,
+         Parent = Mother + 2*Father + 3*Other,
+         Parent_drop = Mother + Father + Other,
+         Day = if_else(Talk == 5, 1, 0),
+         Week = if_else(Talk == 4, 1, 0),
+         Month = if_else(Talk == 3, 1, 0),
+         Year = if_else(Talk == 2, 1, 0),
+         Never = if_else(Talk == 1, 1, 0))%>%
+  filter(Parent_drop == 1)%>%
+  filter(Parent != 3) %>%
+  mutate(Parent = recode(Parent, '1'=1L, '2'=0L)) %>%
+  select(-Parent_drop, -Mother, -Father, -Other, -ID)
+```
+```{r, echo=FALSE}
+#skim(rdata)
+```
+```{r, echo=FALSE, message=FALSE}
+tbl <- full_join(count(rdata, Early),
+          count(rdata, Care)) %>%
+full_join(., count(rdata, Parent)) %>%
+full_join(., count(rdata, Talk))
+tbl %>% select(!n, n)
+```
+
+***
+# 3. Selecting Model
+### Proportional and Unproportional
+```{r}
+fit1 <- vglm(cbind(Never, Year, Month, Week, Day)~ Early + Care + Parent, 
+             family = cumulative(parallel = TRUE), data = rdata)
+fit2 <- vglm(cbind(Never, Year, Month, Week, Day)~ Early + Care + Parent, 
+             family = cumulative(parallel = FALSE), data = rdata)
+```
+```{r, include=FALSE}
+summary(fit1)
+summary(fit2)
+```
+ \(\Delta\chi^2=Deviance_{proportional}-Deviance_{unproportional}\) = 11061.27-11051.1=`r 11061.27-11051.1`
+ \(df=df_{proportional}-df_{unproportional}\) = 21565-21556=`r 21565-21556`
+ \(\chi^2_{.05}(9)\) = `r qchisq(.95, 9)`
+ Since `r qchisq(.95, 9)` > `r 11061.27-11051.1`, choose proportional model.
+
+### Dropping 'Early'
+```{r}
+fit_without_Early <- vglm(cbind(Never, Year, Month, Week, Day)~ Care + Parent,
+                          family = cumulative(parallel = TRUE), data = rdata)
+```
+```{r, include=FALSE}
+summary(fit_without_Early)
+```
+ \(\Delta\chi^2=Deviance_{without Early}-Deviance_{proportional}\) = 11061.35-11061.27=`r 11061.35-11061.27`
+ \(df=df_{without Early}-df_{proportional}\) = 21566-21565=`r 21566-21565`
+ \(\chi^2_{.05}(1)\) = `r qchisq(.95, 1)`
+ Since `r qchisq(.95, 1)` > `r 11061.35-11061.27`, choose model without 'Early'.
+```{r, include=F}
+#fit3 <- vglm(cbind(Never, Year, Month, Week, Day)~ Early * Care * Parent, family = cumulative(parallel = F), data = rdata)
+#fit4 <- vglm(cbind(Never, Year, Month, Week, Day)~ 1, family = cumulative(parallel = FALSE), data = rdata)
+#summary(fit3)
+#summary(fit4)
+```
+*** 
+# 4. Model
+* Model : 
+
+\[logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\]
+ 
+That is,
+ $logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},$
+ $where  \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .$
+
+Since $\beta_1<0$, when there is someone to take care of the child(i.e., $X_{Care}=1$), 
+$p(having more time to talk)$ increases.
+
+Since $\beta_2<0$, when the mother of the child responded to the questionnaire(i.e., $X_{Parent}=1$), 
+$p(having more time to talk)$ increases.
+
+***
+# 5. Discussion
+The result implies that the exsistence of child care which is indicated by _Care_ is related to child-parent interaction, and implies that gender of the respondent of the questionnaire which is indicated by _Parent_ is related to child-parent interaction. It is suggested that further study should be conducted for discovering the reasons that why only `r 678/4706`% of the respondents responded that there is no one to take care of their child and why only `r 828/4565`% of the respondents was father.
+
+
+
+
+

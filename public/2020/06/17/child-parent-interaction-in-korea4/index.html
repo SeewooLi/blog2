@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>Child Parent interaction in Korea &middot; Blog-CU</title>
+
+		
+  		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/fonts.css">
+		
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+		
+		<link href="" rel="alternate" type="application/rss+xml" title="Blog-CU" />
+	</head>
+
+    <body>
+        		<nav class="nav">
+			<div class="nav-container">
+				<a href="/">
+					<h2 class="nav-title">Blog-CU</h2>
+				</a>
+				<ul>
+    
+    
+        <li>
+            <a href="/about/">
+                
+                <span>About</span>
+                
+            </a>
+        </li>
+    
+</ul>
+			</div>
+		</nav>
+
+        
+
+<main>
+	<div class="post">
+		<div class="post-info">
+    <span>Written by</span>
+        Seewoo Li
+        <br>
+        <span>on&nbsp;</span><time datetime="2020-06-17 00:00:00 &#43;0000 UTC">June 17, 2020</time>
+</div>
+		<h1 class="post-title">Child Parent interaction in Korea</h1>
+<div class="post-line"></div>
+
+		
+
+		
+
+
+<div id="introduction" class="section level1">
+<h1>1. Introduction</h1>
+<ul>
+<li>The data is collected from <a href="https://www.oecd.org/pisa/data/2018database/">PISA(Programme for International Student Assessment)</a>.</li>
+<li>Country: Korea</li>
+<li>Students’ age: HighSchool 1<sup>st</sup>Grade</li>
+<li>A fosterer has responded to several questionnaire. And this report analyzes data obtained from those questionnaire.</li>
+<li>Explanation of variables
+<ul>
+<li>Early : Child regularly attended prior to &lt;grade 1 in ISCED 1&gt;: Early childhood educational development […]
+0: No, 1: Yes</li>
+<li>Care : <the last academic year>, participation hindered: I had no one to take care of my child/ children.
+0: There was no one, 1: There was someone</li>
+<li>Parent : Who will complete this questionnaire?
+0: Father, 1: Mother</li>
+<li>Talk : Activities with your child, how often: Spend time just talking to my child
+1: Never or hardly ever
+2: Once or twice a year
+3: Once or twice a month
+4: Once or twice a week
+5: Every day or almost every day</li>
+<li>Lastly, this report is to analyze the relationship among <em>‘Talk’</em>, <em>‘Early’</em>, <em>‘Care’</em>, <em>‘Parent’</em>.</li>
+</ul></li>
+</ul>
+</div>
+<div id="eploratory-data-analysis" class="section level1">
+<h1>2. Eploratory Data Analysis</h1>
+<pre><code>## # A tibble: 11 x 5
+##    Early  Care Parent  Talk     n
+##    &lt;int&gt; &lt;dbl&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt;
+##  1     0    NA     NA    NA  1011
+##  2     1    NA     NA    NA  4382
+##  3    NA     0     NA    NA   687
+##  4    NA     1     NA    NA  4706
+##  5    NA    NA      0    NA   828
+##  6    NA    NA      1    NA  4565
+##  7    NA    NA     NA     1    31
+##  8    NA    NA     NA     2    62
+##  9    NA    NA     NA     3   569
+## 10    NA    NA     NA     4  2222
+## 11    NA    NA     NA     5  2509</code></pre>
+<hr />
+</div>
+<div id="selecting-model" class="section level1">
+<h1>3. Selecting Model</h1>
+<div id="proportional-and-unproportional" class="section level3">
+<h3>Proportional and Unproportional</h3>
+<pre class="r"><code>fit1 &lt;- vglm(cbind(Never, Year, Month, Week, Day)~ Early + Care + Parent, 
+             family = cumulative(parallel = TRUE), data = rdata)
+fit2 &lt;- vglm(cbind(Never, Year, Month, Week, Day)~ Early + Care + Parent, 
+             family = cumulative(parallel = FALSE), data = rdata)</code></pre>
+<ul>
+<li><span class="math inline">\(\Delta\chi^2=Deviance_{proportional}-Deviance_{unproportional}\)</span> = 11061.27-11051.1=10.17</li>
+<li><span class="math inline">\(df=df_{proportional}-df_{unproportional}\)</span> = 21565-21556=9</li>
+<li><span class="math inline">\(\chi^2_{.05}(9)\)</span> = 16.9189776</li>
+<li>Since 16.9189776 &gt; 10.17, choose proportional model.</li>
+</ul>
+</div>
+<div id="dropping-early" class="section level3">
+<h3>Dropping ‘Early’</h3>
+<pre class="r"><code>fit_without_Early &lt;- vglm(cbind(Never, Year, Month, Week, Day)~ Care + Parent,
+                          family = cumulative(parallel = TRUE), data = rdata)</code></pre>
+<ul>
+<li><span class="math inline">\(\Delta\chi^2=Deviance_{without Early}-Deviance_{proportional}\)</span> = 11061.35-11061.27=0.08</li>
+<li><span class="math inline">\(df=df_{without Early}-df_{proportional}\)</span> = 21566-21565=1</li>
+<li><span class="math inline">\(\chi^2_{.05}(1)\)</span> = 3.8414588</li>
+<li>Since 3.8414588 &gt; 0.08, choose model without ‘Early’.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="model" class="section level1">
+<h1>4. Model</h1>
+<ul>
+<li>Model :
+<span class="math inline">\(logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\)</span>
+That is,
+<span class="math display">\[logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},\]</span>
+<span class="math display">\[where  \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .\]</span></li>
+<li>Since <span class="math inline">\(\beta_1&lt;0\)</span>, when there is someone to take care of the child(i.e., <span class="math inline">\(X_{Care}=1\)</span>),
+<span class="math inline">\(p(having more time to talk)\)</span> increases.</li>
+<li>Since <span class="math inline">\(\beta_2&lt;0\)</span>, when the mother of the child responded to the questionnaire(i.e., <span class="math inline">\(X_{Parent}=1\)</span>),
+<span class="math inline">\(p(having more time to talk)\)</span> increases.</li>
+</ul>
+<hr />
+</div>
+<div id="discussion" class="section level1">
+<h1>5. Discussion</h1>
+<p>The result implies that the exsistence of child care which is indicated by <em>Care</em> is related to child-parent interaction, and implies that gender of the respondent of the questionnaire which is indicated by <em>Parent</em> is related to child-parent interaction. It is suggested that further study should be conducted for discovering the reasons that why only 0.1440714% of the respondents responded that there is no one to take care of their child and why only 0.1813801% of the respondents was father.</p>
+</div>
+
+
+		
+	</div>
+
+	<div class="pagination">
+		<a href="/2020/06/13/2020-06-13-child-parent-interaction-in-korea/" class="left arrow">&#8592;</a>
+
+		<a href="#" class="top">Top</a>
+	</div>
+</main>
+
+
+        		<footer>
+			<span>
+			&copy; <time datetime="2020-06-17 02:42:18.4665119 &#43;0900 KST m=&#43;0.225479601">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			</span>
+		</footer>
+
+    </body>
+</html>
