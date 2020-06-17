@@ -413,33 +413,29 @@ summary {
              family = cumulative(parallel = TRUE), data = rdata)
 fit2 &lt;- vglm(cbind(Never, Year, Month, Week, Day)~ Early + Care + Parent, 
              family = cumulative(parallel = FALSE), data = rdata)</code></pre>
-<ul>
-<li><span class="math inline">\(\Delta\chi^2=Deviance_{proportional}-Deviance_{unproportional}\)</span> = 11061.27-11051.1=10.17</li>
-<li><span class="math inline">\(df=df_{proportional}-df_{unproportional}\)</span> = 21565-21556=9</li>
-<li><span class="math inline">\(\chi^2_{.05}(9)\)</span> = 16.9189776</li>
-<li>Since 16.9189776 &gt; 10.17, choose proportional model.</li>
-</ul>
+<p><span class="math inline">\(\Delta\chi^2=Deviance_{proportional}-Deviance_{unproportional}\)</span> = 11061.27-11051.1=10.17</p>
+<p><span class="math inline">\(df=df_{proportional}-df_{unproportional}\)</span> = 21565-21556=9</p>
+<p><span class="math inline">\(\chi^2_{.05}(9)\)</span> = 16.9189776 Since 16.9189776 &gt; 10.17, choose proportional model.</p>
 </div>
 <div id="dropping-early" class="section level3">
 <h3>Dropping ‘Early’</h3>
 <pre class="r"><code>fit_without_Early &lt;- vglm(cbind(Never, Year, Month, Week, Day)~ Care + Parent,
                           family = cumulative(parallel = TRUE), data = rdata)</code></pre>
-<ul>
-<li><span class="math inline">\(\Delta\chi^2=Deviance_{without Early}-Deviance_{proportional}\)</span> = 11061.35-11061.27=0.08</li>
-<li><span class="math inline">\(df=df_{without Early}-df_{proportional}\)</span> = 21566-21565=1</li>
-<li><span class="math inline">\(\chi^2_{.05}(1)\)</span> = 3.8414588</li>
-<li>Since 3.8414588 &gt; 0.08, choose model without ‘Early’.</li>
-</ul>
+<p><span class="math inline">\(\Delta\chi^2=Deviance_{without Early}-Deviance_{proportional}\)</span> = 11061.35-11061.27=0.08</p>
+<p><span class="math inline">\(df=df_{without Early}-df_{proportional}\)</span> = 21566-21565=1</p>
+<p><span class="math inline">\(\chi^2_{.05}(1)\)</span> = 3.8414588 Since 3.8414588 &gt; 0.08, choose model without ‘Early’.</p>
 <hr />
 </div>
 </div>
 <div id="model" class="section level1">
 <h1>4. Model</h1>
 <ul>
-<li>Model : <span class="math inline">\(logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\)</span> That is, <span class="math display">\[logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},\]</span> <span class="math display">\[where  \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .\]</span></li>
-<li>Since <span class="math inline">\(\beta_1&lt;0\)</span>, when there is someone to take care of the child(i.e., <span class="math inline">\(X_{Care}=1\)</span>), <span class="math inline">\(p(having more time to talk)\)</span> increases.</li>
-<li>Since <span class="math inline">\(\beta_2&lt;0\)</span>, when the mother of the child responded to the questionnaire(i.e., <span class="math inline">\(X_{Parent}=1\)</span>), <span class="math inline">\(p(having more time to talk)\)</span> increases.</li>
+<li>Model :</li>
 </ul>
+<p><span class="math display">\[logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\]</span></p>
+<p>That is, <span class="math inline">\(logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},\)</span> <span class="math inline">\(where \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .\)</span></p>
+<p>Since <span class="math inline">\(\beta_1&lt;0\)</span>, when there is someone to take care of the child(i.e., <span class="math inline">\(X_{Care}=1\)</span>), <span class="math inline">\(p(having more time to talk)\)</span> increases.</p>
+<p>Since <span class="math inline">\(\beta_2&lt;0\)</span>, when the mother of the child responded to the questionnaire(i.e., <span class="math inline">\(X_{Parent}=1\)</span>), <span class="math inline">\(p(having more time to talk)\)</span> increases.</p>
 <hr />
 </div>
 <div id="discussion" class="section level1">

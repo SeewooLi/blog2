@@ -127,15 +127,14 @@ Since 3.8414588 &gt; 0.08, choose model without ‘Early’.</p>
 <div id="model" class="section level1">
 <h1>4. Model</h1>
 <ul>
-<li>Model :</li>
+<li>Model : <span class="math display">\[logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\]</span></li>
 </ul>
-<p><span class="math display">\[logit{P(Y_{Talk}\le j)}=\alpha_j+\beta_1X_{Care}+\beta_2X_{Parent}\]</span></p>
 <p>That is,
 <span class="math inline">\(logit{P(Y_{Talk}\le j)}=\alpha_j-0.35023X_{Care}-0.80328X_{Parent},\)</span>
-<span class="math inline">\(where \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .\)</span></p>
-<p>Since <span class="math inline">\(\beta_1&lt;0\)</span>, when there is someone to take care of the child(i.e., <span class="math inline">\(X_{Care}=1\)</span>),
-<span class="math inline">\(p(having more time to talk)\)</span> increases.</p>
-<p>Since <span class="math inline">\(\beta_2&lt;0\)</span>, when the mother of the child responded to the questionnaire(i.e., <span class="math inline">\(X_{Parent}=1\)</span>),
+<span class="math inline">\(where \alpha_{Never}= -4.22657, \alpha_{Year}= -3.11453, \alpha_{Month}= -1.02188, \alpha_{Week}= 1.13272 .\)</span>
+Since <span class="math inline">\(\beta_1&lt;0\)</span>, when there is someone to take care of the child(i.e., <span class="math inline">\(X_{Care}=1\)</span>),
+<span class="math inline">\(p(having more time to talk)\)</span> increases.
+Since <span class="math inline">\(\beta_2&lt;0\)</span>, when the mother of the child responded to the questionnaire(i.e., <span class="math inline">\(X_{Parent}=1\)</span>),
 <span class="math inline">\(p(having more time to talk)\)</span> increases.</p>
 <hr />
 </div>
@@ -158,9 +157,14 @@ Since 3.8414588 &gt; 0.08, choose model without ‘Early’.</p>
 
         		<footer>
 			<span>
-			&copy; <time datetime="2020-06-17 03:32:54.207454 &#43;0900 KST m=&#43;0.165557001">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
+			&copy; <time datetime="2020-06-17 12:19:13.0138757 &#43;0900 KST m=&#43;0.227416501">2020</time> . Made with <a href='https://gohugo.io'>Hugo</a> using the <a href='https://github.com/EmielH/tale-hugo/'>Tale</a> theme.
 			</span>
 		</footer>
+			<script src="//yihui.name/js/math-code.js"></script>
+			<script async
+			src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+			</script>
+			
 
     </body>
 </html>
