@@ -303,23 +303,24 @@ Since all of the VIF values are less than 10, there is no multicolinearity detec
 
 * Mediation model using structural equation modeling.
     * Model
-```{r, out.width = "200px", echo=FALSE, fig.align="center"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/2.3.2.Model.png")
+    
+```{r, eval=FALSE}    
+#add image
+# blogdown:::insert_image_addin() 
 ```
-![](C:/Users/CU/Desktop/blogdown/blog2/content/post/2.3.2.Model.png)
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/2.3.2.Model.png)
+
+
 ******
 
 # 3. Result
 
 ## 3.1. Effect of Formative Assessment on Test Score
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/fit_regression.png)
 
-```{r, out.width = "400px", echo=FALSE, fig.align="left"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/fit_regression.png")
-```
 
-```{r, out.width = "400px", echo=FALSE, fig.align="left"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/coefficient_regression.png")
-```
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/coefficient_regression.png)
+
 Model fits the data since $\chi^2$ statistic does not reject the null hypothesis. Also, other model fit indices, i.e., RMSEA, CFI, and SRMR, satisfies the rule of thumb. 
 The effect of "Formative Assessment" on "Test Score" is statistically significant with regression coefficient 1.749 with standard error 0.890. 
 
@@ -328,28 +329,25 @@ The effect of "Formative Assessment" on "Test Score" is statistically significan
 
 * Factor Loadings
 
-```{r, out.width = "400px", echo=FALSE, fig.align="left"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/loadings_Full.png")
-```
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/loadings_Full.png)
 
 * Model Coefficients
 
-```{r, out.width = "400px", echo=FALSE, fig.align="left"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/coefficient_Full.png")
-```
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/coefficient_Full.png)
+
+
 When Mediators "Teacher-Student Relationship" and "Self-Efficacy" are add in the model, both direct effect and indirect effect became non-significant; coefficient from "Formative Assessment" to "Test Score" being 0.922 with standard error 0.946, and Sobel test statistic for indirect effect being `r 2.727*0.228*0.597/sqrt(2.727^2*1.771^2+0.228^2*0.063^2+0.597^2*0.106^2)`. 
 
 * Model Fit Indices
-```{r, out.width = "400px", echo=FALSE, fig.align="left"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/fit_Full.png")
-```
+
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/fit_Full.png)
+
 
 Since some correlation between indicators from different factors were not fully explained by measurement model, the model fit was poor;$\chi^2$ value being 263.116 with p-value $\ngtr$ 0.05, RMSEA 0.096 $\nless$ 0.08, CFI 0.879 $\ngtr$ 0.95, and SRMR 0.093 $\nless$ 0.08. 
 
 * Mediation Model Diagram
-```{r, out.width = "400px", echo=FALSE, fig.align="left"}
-knitr::include_graphics("C:/Users/CU/Desktop/blogdown/blog2/content/post/diagram_Full.png")
-```
+
+![](/post/2020-06-18-Formative-Assessment-in-Math_files/diagram_Full.png)
 
 # 4. Discussion
 
